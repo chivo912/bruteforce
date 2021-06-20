@@ -100,4 +100,4 @@ echo
 printf "${LIGHTGREEN}Cracked Successfully! \n"
 echo "User: $USERCRACKED"
 echo "Pass: $PASSWORD"
-echo "$TARGET|$USERCRACKED|$PASSWORD" >result.txt
+echo "$TARGET|$USERCRACKED|$PASSWORD" >>results.txt
